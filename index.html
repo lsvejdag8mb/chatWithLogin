@@ -21,9 +21,19 @@
 
     <div id="login">
       <h2>Login</h2>
-      User name: <input type="text" id="username"><br>      
-      Password: <input type="password" id="password"><br>
+
+      <table>
+        <tr>
+          <td>User name:</td>
+          <td><input type="text" id="username"></td>
+        </tr>
+        <tr>
+          <td>Password:</td>
+          <td><input type="password" id="password"></td>
+        </tr>
+      </table>
       <button onclick="login()">Login</button>
+      <button onclick="showRegistration()">Registration...</button>
       
     </div>
 
@@ -31,12 +41,9 @@
 
     <div id="chat">
 
-      <input type="text" id="nick" placeholder="nickname">
-
-      <br><br>
-
       <input type="text" id="message">
       <button onclick="sendMessagePOST()">Send</button>
+      <button onclick="logout()">Logout</button>
 
       <div id="messageList">...</div>
 

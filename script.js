@@ -14,9 +14,15 @@ async function registration() {
   let data = await response.json();
   console.log(data);
 
+  if (data.status == "OK") {
+    showLogin();
+  } else {
+    alert(data.error);
+  }
 }
 
 let userToken;
+let timer; 
 
 async function login() {
   let un = document.getElementById("username").value;
@@ -32,19 +38,38 @@ async function login() {
 
   if (data.status == "OK") {
     userToken = data.token;
+    showChat();
+  } else {
+    alert(data.error);
   }
+}
 
+async function logout() {
+  if (!confirm("Logout? ...are you sure?!?")) return;
+
+  let url = "https://nodejs-3260.rostiapp.cz/users/logout";
+  let body = {};
+  body.token = userToken;
+  let response = await fetch(url, {"method":"POST", "body": JSON.stringify(body)});
+  let data = await response.json();
+  console.log(data);
+
+  if (data.status == "OK") {
+    clearInterval(timer);
+    userToken = undefined;
+    showLogin();
+  } else {
+    alert(data.error);
+  }
 }
 
 async function sendMessagePOST() {
-  let n = document.getElementById("nick").value;
   let m = document.getElementById("message").value;
   document.getElementById("message").value = ""; //clear message text on page
   document.getElementById("message").focus(); //text cursor to input
 
   let url = "https://nodejs-3260.rostiapp.cz/chat/addMsg";
   let body = {};
-  body.nickx = n;
   body.msg = m;
   body.chat = "ide933a740f211a5579b56dede4bb2c5";
   body.token = userToken;
@@ -77,8 +102,28 @@ function onKeyDown(event) {
   }
 }
 
+function showLogin() {
+  document.getElementById("registration").style.display = "none";
+  document.getElementById("login").style.display = "block";
+  document.getElementById("chat").style.display = "none";
+}
+
+function showRegistration() {
+  document.getElementById("registration").style.display = "block";
+  document.getElementById("login").style.display = "none";
+  document.getElementById("chat").style.display = "none";
+}
+
+function showChat() {
+  document.getElementById("registration").style.display = "none";
+  document.getElementById("login").style.display = "none";
+  document.getElementById("chat").style.display = "block";
+
+  timer = setInterval(updateMessages, 1000);
+}
+
 function onLoad() {
-  setInterval(updateMessages, 1000);
+  showLogin();
 
   document.getElementById("message").addEventListener("keydown", onKeyDown);
 }
